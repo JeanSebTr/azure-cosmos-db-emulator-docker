@@ -1,19 +1,16 @@
 # CosmosDB Emulator Dockerfile
 
 # Indicates that the windowsservercore image will be used as the base image.
-
-# Metadata indicating an image maintainer.
-MAINTAINER mominag@microsoft.com
-
-# Add the CosmosDB installer msi into the package
-ADD https://aka.ms/cosmosdb-emulator c:\\CosmosDBEmulator\\AzureCosmosDB.Emulator.msi
 FROM mcr.microsoft.com/windows/servercore:ltsc2019
 
 # Copy misc scripts into the package
-COPY package_scripts\\startemu.cmd c:\\CosmosDBEmulator\\startemu.cmd
+COPY package_scripts\\startemu.ps1 c:\\CosmosDBEmulator\\startemu.ps1
 COPY package_scripts\\getaddr.ps1 c:\\CosmosDBEmulator\\getaddr.ps1
 COPY package_scripts\\exportcert.ps1 c:\\CosmosDBEmulator\\exportcert.ps1
 COPY package_scripts\\importcert.ps1 c:\\CosmosDBEmulator\\importcert.ps1
+
+# Add the CosmosDB installer msi into the package
+ADD https://aka.ms/cosmosdb-emulator c:\\CosmosDBEmulator\\AzureCosmosDB.Emulator.msi
 
 # Install the MSI
 RUN echo "Starting Installer"
@@ -34,6 +31,4 @@ EXPOSE 10255
 EXPOSE 10350
 
 # Start the interactive shell
-CMD [ "c:\\CosmosDBEmulator\\startemu.cmd" ]
-
-
+CMD [ "powershell", "c:\\CosmosDBEmulator\\startemu.ps1"]
